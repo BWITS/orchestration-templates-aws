@@ -1,0 +1,58 @@
+{
+  "variables": {
+    "bastion_host": "{{env `BASTION_HOST`}}",
+    "bastion_username": "{{env `BASTION_USERNAME`}}",
+    "bastion_private_key": "{{env `PRIVATE_KEY`}}",
+    "region": "ap-southeast-2",
+    "image": "ami-98bfe4fb",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu",
+    "volume_size": "20",
+    "image_name": "Ubuntu 14.04 LTS HVM"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "communicator": "ssh",
+      "ssh_bastion_host": "{{user `bastion_host`}}",
+      "ssh_bastion_username": "{{user `bastion_username`}}",
+      "ssh_bastion_private_key_file": "{{user `bastion_private_key`}}",
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `image`}}",
+      "instance_type": "{{user `instance_type`}}",
+      "ssh_username": "{{user `ssh_username`}}",
+      "ssh_timeout": "10m",
+      "ssh_pty" : true,
+      "ami_name": "{{user `image_name`}} {{user `image`}} {{isotime \"2006-01-02 03-04-05\"}}",
+      "ami_block_device_mappings": [ {
+          "device_name": "/dev/sda1",
+          "volume_size": "{{user `volume_size`}}",
+          "delete_on_termination": true
+      } ],
+      "launch_block_device_mappings": [ {
+          "device_name": "/dev/sda1",
+          "volume_size": "{{user `volume_size`}}",
+          "delete_on_termination": true
+      } ],
+      "tags": {
+          "Name": "{{user `image_name`}}_{{isotime \"2006-01-02\"}}",
+          "Packer": "true"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "packer.sh",
+      "destination": "/tmp/packer.sh"
+    },
+    {
+      "type": "shell",
+      "inline": [
+          "sudo chmod +x /tmp/packer.sh",
+          "sudo bash -x /tmp/packer.sh",
+          "sudo rm /tmp/packer.sh"
+      ]
+    }
+  ]
+}
