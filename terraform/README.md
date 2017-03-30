@@ -14,11 +14,15 @@ After you run `terraform apply` on this configuration, it will
 automatically output the DNS address of the ELB. After your instance
 registers, this should respond with the default nginx web page.
 
+### Terraform version
+
+You need terraform version 0.7 and above.
+
+### Usage
+
 To run, configure your AWS provider as described in 
 
 https://www.terraform.io/docs/providers/aws/index.html
-
-Run with a command like this:
 
 ```
 terraform apply -var 'key_name={your_keypair_name}'
@@ -29,3 +33,5 @@ or
 ```
 terraform apply -var-file=np.tfvars
 ```
+
+In file `cmd.sh`, it gives the basic commands you required to play around with terraform. Enjoy it.
