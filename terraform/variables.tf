@@ -1,5 +1,6 @@
 variable "key_name" {
   description = "Exist AWS key pair"
+  default = "terraform"
 }
 
 variable "aws_region" {
